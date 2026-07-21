@@ -1,5 +1,6 @@
 {
   "host": "ANIMONI_SMP.aternos.me",
   "port": 39812,
-  "username": "ANIMONIBOT"
+  "username": "ANIMONIBOT",
+  "offline": true
 }
