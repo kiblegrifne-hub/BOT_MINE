@@ -1,11 +1,16 @@
 {
-  "name": "ANIMONIBOT",
+  "name": "animonibot",
   "version": "1.0.0",
+  "description": "ANIMONIBOT for Minecraft Bedrock",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node index.js"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
-    "bedrock-protocol": "^3.40.0"
+    "mineflayer-bedrock": "latest"
   }
 }
