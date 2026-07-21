@@ -2,5 +2,10 @@
   "host": "ANIMONI_SMP.aternos.me",
   "port": 39812,
   "username": "ANIMONIBOT",
-  "offline": true
+  "version": "1.21.92",
+  "autoReconnect": true,
+  "reconnectDelay": 5000,
+  "autoRespawn": true,
+  "antiAfk": true,
+  "antiAfkInterval": 60000
 }
