@@ -1,11 +1,13 @@
 const bedrock = require("bedrock-protocol");
 const Logger = require("./logger");
 const registerEvents = require("./events");
+const movement = require("./movement");
 
 let client = null;
 let reconnecting = false;
 
 function connect() {
+
     Logger.info("Connecting to server...");
 
     client = bedrock.createClient({
@@ -19,14 +21,25 @@ function connect() {
     registerEvents(client);
 
     client.on("join", () => {
+
         Logger.success("ANIMONIBOT joined the server!");
+
         reconnecting = false;
+
+        // تشغيل Anti-AFK
+        movement.startMovement(client);
+
     });
 
     client.on("disconnect", () => {
+
         Logger.warn("Disconnected from server.");
 
+        // إيقاف الحركة
+        movement.stopMovement();
+
         if (CONFIG.options.autoReconnect && !reconnecting) {
+
             reconnecting = true;
 
             Logger.info(
@@ -36,13 +49,19 @@ function connect() {
             setTimeout(() => {
                 connect();
             }, CONFIG.options.reconnectDelay);
+
         }
+
     });
 
     client.on("error", (err) => {
+
         Logger.error(err.message);
 
+        movement.stopMovement();
+
         if (CONFIG.options.autoReconnect && !reconnecting) {
+
             reconnecting = true;
 
             Logger.info(
@@ -52,16 +71,25 @@ function connect() {
             setTimeout(() => {
                 connect();
             }, CONFIG.options.reconnectDelay);
+
         }
+
     });
 
     process.on("SIGINT", () => {
+
         Logger.warn("Stopping ANIMONIBOT...");
+
+        movement.stopMovement();
+
         process.exit();
+
     });
+
 }
 
 module.exports = {
+
     start() {
         connect();
     },
@@ -69,4 +97,5 @@ module.exports = {
     getClient() {
         return client;
     }
+
 };
