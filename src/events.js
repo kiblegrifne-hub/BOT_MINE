@@ -1,4 +1,5 @@
 const Logger = require("./logger");
+const respawn = require("./respawn");
 
 function registerEvents(client) {
 
@@ -15,35 +16,25 @@ function registerEvents(client) {
     });
 
     client.on("text", (packet) => {
-        try {
 
-            if (!packet.message) return;
+        if (!packet.message) return;
 
-            Logger.info(`[CHAT] ${packet.message}`);
+        Logger.info(`[CHAT] ${packet.message}`);
 
-            // إذا ظهرت رسالة الموت نحاول إعادة الإحياء
-            const msg = packet.message.toLowerCase();
+        const msg = packet.message.toLowerCase();
 
-            if (
-                msg.includes("died") ||
-                msg.includes("killed") ||
-                msg.includes("slain")
-            ) {
+        if (
+            msg.includes("died") ||
+            msg.includes("killed") ||
+            msg.includes("slain")
+        ) {
 
-                Logger.warn("Death detected.");
+            Logger.warn("Death detected.");
 
-                try {
-                    client.queue("respawn", {});
-                    Logger.success("Respawn packet sent.");
-                } catch (e) {
-                    Logger.error("Respawn failed.");
-                }
+            respawn(client);
 
-            }
-
-        } catch (e) {
-            Logger.error(e.message);
         }
+
     });
 
 }
