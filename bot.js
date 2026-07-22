@@ -1,5 +1,6 @@
 const bedrock = require("bedrock-protocol");
 const Logger = require("./logger");
+const registerEvents = require("./events");
 
 let client = null;
 let reconnecting = false;
@@ -14,13 +15,15 @@ function connect() {
         offline: CONFIG.bot.offline
     });
 
+    // تسجيل جميع الأحداث
+    registerEvents(client);
+
     client.on("join", () => {
         Logger.success("ANIMONIBOT joined the server!");
-
         reconnecting = false;
     });
 
-    client.on("disconnect", (packet) => {
+    client.on("disconnect", () => {
         Logger.warn("Disconnected from server.");
 
         if (CONFIG.options.autoReconnect && !reconnecting) {
@@ -42,6 +45,10 @@ function connect() {
         if (CONFIG.options.autoReconnect && !reconnecting) {
             reconnecting = true;
 
+            Logger.info(
+                `Retrying in ${CONFIG.options.reconnectDelay / 1000} seconds...`
+            );
+
             setTimeout(() => {
                 connect();
             }, CONFIG.options.reconnectDelay);
@@ -49,7 +56,7 @@ function connect() {
     });
 
     process.on("SIGINT", () => {
-        Logger.warn("Stopping bot...");
+        Logger.warn("Stopping ANIMONIBOT...");
         process.exit();
     });
 }
